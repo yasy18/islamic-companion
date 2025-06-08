@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Islamic Companion by Yasmine</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cairo&display=swap');
+  body {
+    font-family: 'Cairo', sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(to bottom, #1e3c72, #2a5298);
+    color: #f0f0f0;
+    transition: background 2s ease;
+    padding: 20px 0;
+  }
+  .container {
+    background: rgba(0,0,0,0.5);
+    border-radius: 18px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.6);
+    width: 90vw;
+    max-width: 480px;
+    padding: 28px 30px;
+    text-align: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  h1 {
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #FFD700;
+    font-size: 2.4rem;
+  }
+  h2 {
+    margin: 10px 0 8px;
+    font-weight: 600;
+    color: #ffeb3b;
+    font-size: 1.35rem;
+    border-bottom: 2px solid #ffeb3b;
+    padding-bottom: 4px;
+  }
+  .quran-verse, .hadith {
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 16px 22px;
+    font-style: italic;
+    font-size: 1.15rem;
+    min-height: 80px;
+    line-height: 1.4;
+  }
+  .author {
+    font-weight: 600;
+    margin-top: 6px;
+    color: #ffd54f;
+    font-size: 1rem;
+  }
+  .prayer-times {
+    background: rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 14px 22px;
+    font-weight: 600;
+    font-size: 1.05rem;
+    text-align: left;
+  }
+  .prayer-times div {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+  }
+  .notification-area {
+    margin: 8px 0 12px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #ffcc80;
+    min-height: 28px;
+    min-width: 300px;
+    user-select: none;
+    transition: opacity 0.4s ease;
+  }
+  button {
+    background: #ffc107;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 18px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    box-shadow: 0 4px 8px rgb(255 193 7 / 0.6);
+    margin: 6px 0;
+    align-self: center;
+  }
+  button:hover {
+    background: #ffb300;
+  }
+  .tasbeeh {
+    margin-top: 6px;
+  }
+  .counter-display {
+    font-size: 2.8rem;
+    font-weight: 700;
+    margin: 10px 0;
+    color: #ffee58;
+    user-select: none;
+  }
+  #wudu-section {
+    background: rgba(255, 255, 255, 0.95);
+    color: #333;
+    padding: 20px 25px;
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    max-width: 420px;
+    margin: 10px auto;
+    text-align: left;
+  }
+  #wudu-section h2 {
+    color: #00796b;
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  #wudu-section ol {
+    padding-left: 20px;
+  }
+  #wudu-section ol li {
+    margin-bottom: 12px;
+    font-size: 1.12rem;
+  }
+  #sound-control, #athan-control {
+    position: absolute;
+    top: 22px;
+    cursor: pointer;
+    font-size: 1.8rem;
+    user-select: none;
+    filter: drop-shadow(0 0 4px #ffeb3b);
+    color: #ffeb3b;
+    transition: color 0.3s ease;
+  }
+  #sound-control.paused, #athan-control.paused {
+    color: #fff;
+    filter: none;
+  }
+  #sound-control {
+    right: 26px;
+  }
+  #athan-control {
+    right: 68px;
+  }
+  footer {
+    margin-top: 28px;
+    font-weight: 600;
+    color: #ffeb3b;
+    font-size: 1rem;
+    user-select: none;
+  }
+  #notif-toggle {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: #ffca28;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 3px 7px rgba(255, 193, 7, 0.6);
+    z-index: 9999;
+    user-select: none;
+  }
+  #notif-toggle.active {
+    background: #ffd54f;
+  }
+</style>
+</head>
+<body>
+  <button id="notif-toggle" class="active" title="Toggle Prayer Reminders Notifications">🔔 Notifications ON</button>
+
+  <div class="container" id="main-content">
+    <h1>Islamic Companion</h1>
+    <div class="quran-verse" id="quran-verse">Loading Quran verse...</div>
+    <div class="author" id="quran-author">- By Yasmine</div>
+
+    <h2>Hadith of the Day</h2>
+    <div class="hadith" id="hadith">Loading Hadith...</div>
+
+    <h2 id="prayer-header">Prayer Times (Casablanca)</h2>
+    <div class="prayer-times" id="prayer-times">Loading prayer times...</div>
+
+    <div class="notification-area" id="notification-area"></div>
+   
+    <div class="tasbeeh">
+      <h2>Tasbeeh Counter</h2>
+      <div class="counter-display" id="tasbeeh-count">0</div>
+      <button id="increment-btn">➕ Add 1</button>
+      <button id="reset-btn">🔄 Reset</button>
+      <audio id="ding-sound" src="https://actions.google.com/sounds/v1/alarms/soft_bell_ring.ogg" preload="auto"></audio>
+    </div>
+    
+
+    <button onclick="showWudu()">🧼 Learn Wudu Steps</button>
+
+    <div id="sound-control" title="Play/Pause Surah Al-Kahf" style="display:none;">🔊</div>
+    <audio id="surah-kahf" src="https://server8.mp3quran.net/huda/018.mp3" preload="auto"></audio>
+
+    <div id="athan-control" title="Play/Pause Athan" style="display:none;">📢</div>
+    <audio id="athan-audio" src="https://cdn.islamic.network/quran/audio-surahs/128/ar.alafasy/005.mp3" preload="auto"></audio>
+  </div>
+
+  <div id="wudu-section" style="display:none;">
+    <h2>🧼 How to Perform Wudu (Ablution)</h2>
+    <ol>
+      <li>Make the intention (Niyyah) for Wudu.</li>
+      <li>Wash both hands up to the wrists three times.</li>
+      <li>Rinse your mouth three times.</li>
+      <li>Sniff water into your nose and blow it out three times.</li>
+      <li>Wash your face three times.</li>
+      <li>Wash your arms up to the elbows three times, starting with the right arm.</li>
+      <li>Wipe your head once, including ears.</li>
+      <li>Wash your feet up to the ankles three times, starting with the right foot.</li>
+    </ol>
+    <button onclick="hideWudu()">⬅ Back to Main</button>
+  </div>
+
+  <footer>Made with ❤️ by Yasmine</footer>
+
+<script>
+const quranVerses = [
+  { text: "Indeed, Allah is with those who fear Him and those who are doers of good.", surah: "Surah An-Nahl 16:128" },
+  { text: "And He found you lost and guided [you].", surah: "Surah Ad-Duha 93:7" },
+  { text: "So remember Me; I will remember you.", surah: "Surah Al-Baqarah 2:152" },
+  { text: "Indeed, prayer prohibits immorality and wrongdoing.", surah: "Surah Al-Ankabut 29:45" },
+  { text: "And We have certainly made the Qur'an easy for remembrance.", surah: "Surah Al-Qamar 54:17" }
+];
+
+const hadiths = [
+  "The best among you are those who have the best manners and character. — Prophet Muhammad ﷺ",
+  "Seek knowledge from the cradle to the grave.",
+  "The strong believer is better and more beloved to Allah than the weak believer.",
+  "Allah does not look at your bodies or your appearances but He looks at your hearts and deeds.",
+  "He who is not merciful to people, Allah will not be merciful to him."
+];
+
+// Display random Quran verse
+function displayRandomQuranVerse() {
+  const q = quranVerses[Math.floor(Math.random() * quranVerses.length)];
+  document.getElementById('quran-verse').textContent = `"${q.text}"`;
+  document.getElementById('quran-author').textContent = `- ${q.surah}`;
+}
+
+// Display random Hadith
+function displayRandomHadith() {
+  const h = hadiths[Math.floor(Math.random() * hadiths.length)];
+  document.getElementById('hadith').textContent = h;
+}
+
+// Prayer times fetch and display for Casablanca
+async function fetchPrayerTimes() {
+  try {
+    const response = await fetch("https://api.aladhan.com/v1/timingsByCity?city=Casablanca&country=Morocco&method=2");
+    const data = await response.json();
+    if (data.code === 200) {
+      const timings = data.data.timings;
+      const filteredTimings = {
+        Fajr: timings.Fajr,
+        Dhuhr: timings.Dhuhr,
+        Asr: timings.Asr,
+        Maghrib: timings.Maghrib,
+        Isha: timings.Isha
+      };
+      displayPrayerTimes(filteredTimings);
+
+      // Start checking reminders every minute
+      setInterval(() => checkPrayerReminders(filteredTimings), 60 * 1000);
+      // Also check immediately in case near time
+      checkPrayerReminders(filteredTimings);
+
+    } else {
+      document.getElementById('prayer-times').textContent = "Failed to load prayer times.";
+    }
+  } catch (error) {
+    document.getElementById('prayer-times').textContent = "Error loading prayer times.";
+  }
+}
+
+// Display prayer times nicely
+function displayPrayerTimes(times) {
+  const container = document.getElementById('prayer-times');
+  container.innerHTML = "";
+  for (const [prayer, time] of Object.entries(times)) {
+    container.innerHTML += `<div><strong>${prayer}</strong><span>${time}</span></div>`;
+  }
+}
+
+// Notification toggle
+const notifToggle = document.getElementById('notif-toggle');
+let notificationsEnabled = true;
+
+notifToggle.addEventListener('click', () => {
+  notificationsEnabled = !notificationsEnabled;
+  notifToggle.classList.toggle('active', notificationsEnabled);
+  notifToggle.textContent = notificationsEnabled ? "🔔 Notifications ON" : "🔕 Notifications OFF";
+  if (!notificationsEnabled) {
+    clearNotification();
+  }
+});
+
+// Cute reminder messages per prayer
+const reminderMessages = {
+  Fajr: "🌸 Time to pray Fajr! Start your day with peace.",
+  Dhuhr: "☀️ Dhuhr prayer is near, take a peaceful pause.",
+  Asr: "🍃 Asr time, refresh your soul with prayer.",
+  Maghrib: "🌙 Maghrib prayer is near, take a moment to reconnect.",
+  Isha: "✨ Isha time, end your day with tranquility."
+};
+
+// Notification display and clear
+const notifArea = document.getElementById('notification-area');
+
+function showNotification(message) {
+  notifArea.style.opacity = "1";
+  notifArea.textContent = message;
+  clearTimeout(window.notifTimeout);
+  window.notifTimeout = setTimeout(() => {
+    notifArea.style.opacity = "0";
+    notifArea.textContent = "";
+  }, 4000);
+}
+
+function clearNotification() {
+  notifArea.style.opacity = "0";
+  notifArea.textContent = "";
+  clearTimeout(window.notifTimeout);
+}
+
+// Check prayer reminders, 5 mins before each prayer time
+function checkPrayerReminders(prayerTimes) {
+  if (!notificationsEnabled) return;
+
+  const now = new Date();
+  const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+  for (const prayer of Object.keys(reminderMessages)) {
+    const time = prayerTimes[prayer];
+    if (!time) continue;
+
+    const [hr, min] = time.split(":").map(Number);
+    const prayerMinutes = hr * 60 + min;
+
+    if (nowMinutes === prayerMinutes - 5) {
+      showNotification(reminderMessages[prayer]);
+      break; // Show only one at a time
+    }
+  }
+}
+
+// Tasbeeh Counter
+const tasbeehCount = document.getElementById('tasbeeh-count');
+const incrementBtn = document.getElementById('increment-btn');
+const resetBtn = document.getElementById('reset-btn');
+const dingSound = document.getElementById('ding-sound');
+
+let count = 0;
+
+incrementBtn.addEventListener('click', () => {
+  count++;
+  tasbeehCount.textContent = count;
+  dingSound.currentTime = 0;
+  dingSound.play();
+});
+
+resetBtn.addEventListener('click', () => {
+  count = 0;
+  tasbeehCount.textContent = count;
+});
+
+// Show/hide Wudu steps
+function showWudu() {
+  document.getElementById('main-content').style.display = 'none';
+  document.getElementById('wudu-section').style.display = 'block';
+}
+
+function hideWudu() {
+  document.getElementById('wudu-section').style.display = 'none';
+  document.getElementById('main-content').style.display = 'flex';
+}
+
+// Initial load
+displayRandomQuranVerse();
+displayRandomHadith();
+fetchPrayerTimes();
+</script>
+</body>
+</html>
